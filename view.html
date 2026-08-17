@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Latest Location</title>
+<style>
+body{font-family:Arial,sans-serif;max-width:650px;margin:40px auto;padding:20px}
+a{font-size:18px}
+</style>
+</head>
+<body>
+<h2>📍 Latest Shared Location</h2>
+<div id="out">Location लोड हो रही है…</div>
+<script>
+async function load(){
+  const r=await fetch("/api/location");
+  const x=await r.json();
+  if(!x.latitude){document.getElementById("out").textContent="अभी कोई location शेयर नहीं हुई।";return;}
+  const map=`https://www.google.com/maps?q=${x.latitude},${x.longitude}`;
+  document.getElementById("out").innerHTML =
+    `Latitude: ${x.latitude}<br>Longitude: ${x.longitude}<br>`+
+    `Accuracy: लगभग ${Math.round(x.accuracy||0)} मीटर<br>`+
+    `Time: ${new Date(x.timestamp).toLocaleString()}<br><br>`+
+    `<a href="${map}" target="_blank">🗺️ Google Maps पर खोलें</a>`;
+}
+load();
+setInterval(load,10000);
+</script>
+</body>
+</html>
